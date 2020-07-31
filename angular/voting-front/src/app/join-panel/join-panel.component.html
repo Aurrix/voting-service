@@ -1,0 +1,27 @@
+<div class="content" role="main">
+  <mat-card class="card-width-50">
+    <mat-card-title *ngIf="voting">{{voting.name}}</mat-card-title>
+    <form [formGroup]="form">
+      <br>
+      <mat-card-subtitle *ngIf="voting">{{voting.description}}
+      </mat-card-subtitle>
+      <br>
+      <mat-form-field appearance="standard">
+        <mat-label>Nickname</mat-label>
+        <input matInput placeholder="This would be shown to organizer" [formControl]="nickname" required>
+        <mat-error *ngIf="nickname.invalid">This field is mandatory and should be min 3 and max 48 characters
+        </mat-error>
+      </mat-form-field>
+      <br>
+      <mat-card-footer>
+        <div style="text-align: right;margin: 3%">
+          <span>Join as:   </span>
+          <mat-button-toggle-group class="submit-btn">
+            <mat-button-toggle (click)="submit(true)">Observer</mat-button-toggle>
+            <mat-button-toggle (click)="submit(false)">Voter</mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+      </mat-card-footer>
+    </form>
+  </mat-card>
+</div>

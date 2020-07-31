@@ -1,0 +1,42 @@
+<div class="content" role="main">
+  <mat-card class="card-width-75%">
+    <mat-card-title> Begin new Session</mat-card-title>
+
+    <form [formGroup]="form">
+      <br>
+      <mat-card-subtitle>Please fill out basic information about the session below. You will be able to
+        share the access link to session later on.
+      </mat-card-subtitle>
+      <br>
+      <mat-form-field appearance="standard">
+        <mat-label>Session Name</mat-label>
+        <input matInput placeholder="Name of the session you would like to start" [formControl]="name" required>
+        <mat-error *ngIf="name.invalid">This field is mandatory and should be min 3 and max 48 characters</mat-error>
+      </mat-form-field>
+      <br>
+      <mat-form-field appearance="standard">
+        <mat-label>Session Key</mat-label>
+        <input matInput [type]="hide ? 'password' : 'text'"
+               placeholder="Security key would be required to reclaim session from shared link"
+               [formControl]="key" required>
+        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hide">
+          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+        <mat-error *ngIf="key.invalid">This field is mandatory and should be min 4 characters</mat-error>
+      </mat-form-field>
+      <br>
+      <mat-form-field appearance="standard">
+        <mat-label>Session Description</mat-label>
+        <textarea matInput placeholder="This maybe useful for other participants; however, completely not mandatory"
+                  [formControl]="description"></textarea>
+        <mat-error *ngIf="description.invalid">This field is mandatory and should be min 3 and max 48 characters
+        </mat-error>
+      </mat-form-field>
+      <br>
+      <mat-card-footer>
+        <button mat-raised-button (click)="submit()" color="primary" class="submit-btn">Start Session</button>
+      </mat-card-footer>
+    </form>
+  </mat-card>
+</div>

@@ -1,0 +1,111 @@
+<div class="content">
+  <h2 *ngIf="voting">{{voting.name}}</h2>
+  <h3 style="color: #333333; font-style: italic; font-size: small"
+      *ngIf="voting">{{voting.description}}</h3>
+</div>
+<div class="panel-content" *ngIf="keyEntered">
+  <div style="width: 70%;float: left">
+    <h3>Questions:</h3>
+    <mat-table *ngIf="voting.questions" [dataSource]="voting.questions" class="mat-elevation-z8">
+      <!-- NUMBER Column -->
+      <ng-container matColumnDef="number">
+        <mat-header-cell *matHeaderCellDef> No.</mat-header-cell>
+        <mat-cell *matCellDef="let element=index;"> {{element + 1}} </mat-cell>
+      </ng-container>
+
+      <!-- TITLE Column -->
+      <ng-container matColumnDef="title">
+        <mat-header-cell *matHeaderCellDef> Title</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.title}} </mat-cell>
+      </ng-container>
+
+      <!-- DESC Column -->
+      <ng-container matColumnDef="description">
+        <mat-header-cell *matHeaderCellDef> Description</mat-header-cell>
+        <mat-cell *matCellDef="let element"><p>{{element.description}}</p></mat-cell>
+      </ng-container>
+
+      <!-- ACTIVE Column -->
+      <ng-container matColumnDef="active">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <button mat-raised-button color="primary" *ngIf="!element.active && !answered(element.title)" (click)="toggleQuestion(element.title)">
+            <mat-icon>not_started</mat-icon>
+          </button>
+          <button mat-raised-button color="primary" *ngIf="element.active" (click)="toggleQuestion(element.title)">
+            <mat-icon>stop</mat-icon>
+          </button>
+          <button mat-raised-button color="accent" *ngIf="!element.active && answered(element.title) " (click)="toggleQuestion(element.title)">
+            <mat-icon>settings_backup_restore</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <!-- DELETE Column -->
+      <ng-container matColumnDef="delete">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <button mat-raised-button color="warn" (click)="removeQuestion(element.title)">Delete</button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="['number','title','description','active','delete']"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: ['number','title','description','active','delete'];"></mat-row>
+    </mat-table>
+    <br>
+    <button mat-raised-button color="accent" (click)="addQuestionModal()">Add new</button>
+    <hr>
+    <h3>Results:</h3>
+    <br>
+    <div style="width: 100%" *ngFor="let question of voting.questions">
+      <div style="display: block" *ngIf="question.answered && question.answered.length>0">
+        <h4 style="margin-left: 5%">{{question.title}}:</h4>
+        <canvas baseChart
+                [data]="chartData(question.title)"
+                [labels]="chartLabels(question.title)"
+                [options]="chartOptions"
+                [chartType]="chartType"></canvas>
+      </div>
+    </div>
+    <br>
+    <button mat-raised-button color="accent" [cdkCopyToClipboard]="voting.link"
+            (click)="copyToClip()">{{copyBtnText}}
+      <mat-icon>content_copy</mat-icon>
+    </button>
+  </div>
+  <div style="width: 25%; float: right; margin-left: 3%">
+    <br><br>
+    <mat-card>
+      <mat-card-title>
+        Participants:
+      </mat-card-title>
+      <mat-card-content>
+        <mat-card style="padding: 5%; margin: 5%;"
+                  [ngStyle]="{'background-color':!participant.observer ? 'lightgreen' : 'lightyellow' }"
+                  *ngFor="let participant of voting.participants">
+          <div>
+            {{participant.name}}&nbsp;
+            <span style="position: absolute; right: 10px"> <mat-icon
+              *ngIf="participant.observer">visibility</mat-icon></span>
+            <span style="position: absolute; right: 10px"> <mat-icon
+              *ngIf="!participant.observer">history_edu</mat-icon></span>
+          </div>
+        </mat-card>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+<div style="width: 80%; margin: auto" *ngIf="!keyEntered">
+  <mat-card class="card-width-75%">
+    <mat-card-title>Confirm/Enter Key</mat-card-title>
+      <br>
+      <mat-form-field appearance="standard">
+        <input type="password" matInput [(ngModel)]="key" placeholder="This is the key you have entered when registering session">
+      </mat-form-field>
+      <br>
+      <mat-card-footer>
+        <button mat-raised-button (click)="enterKey()" color="primary" class="submit-btn" style="margin: 2%">Submit</button>
+      </mat-card-footer>
+  </mat-card>
+</div>

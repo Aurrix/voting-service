@@ -1,0 +1,61 @@
+<h1 mat-dialog-title>Add new Question</h1>
+<div mat-dialog-content>
+
+  <form [formGroup]="form">
+    <mat-form-field appearance="standard" style="width: 100%">
+      <mat-label>Title</mat-label>
+      <input matInput placeholder="Primary question" [formControl]="title" required>
+      <mat-error *ngIf="title.invalid">This field is mandatory and should be min 3 characters</mat-error>
+    </mat-form-field>
+    <br>
+    <mat-form-field appearance="standard" style="width: 100%">
+      <mat-label>Description</mat-label>
+      <textarea matInput placeholder="Additional information" [formControl]="description"></textarea>
+      <mat-error *ngIf="description.invalid">This would appear under title and may include any additional information
+      </mat-error>
+    </mat-form-field>
+
+    <mat-table [dataSource]="responses" class="mat-elevation-z8">
+      <!-- NUMBER Column -->
+      <ng-container matColumnDef="number">
+        <mat-header-cell *matHeaderCellDef> No.</mat-header-cell>
+        <mat-cell *matCellDef="let index = index;"> {{index + 1}} </mat-cell>
+      </ng-container>
+
+      <!-- RESPONSE Column -->
+      <ng-container matColumnDef="response">
+        <mat-header-cell *matHeaderCellDef> Response</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element}} </mat-cell>
+      </ng-container>
+
+      <!-- DELETE Column -->
+      <ng-container matColumnDef="delete" style="margin: auto">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let element=index">
+          <button mat-button color="warn" (click)="deleteResponseRow(element)">
+            <mat-icon>remove_circle_outline</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="['number','response','delete']"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: ['number','response','delete'];"></mat-row>
+    </mat-table>
+    <br>
+    <div style="justify-content: center;display: flex;flex-direction: column;">
+      <input matInput placeholder="New response option" style="width: 100%; text-align: center" #responseInput>
+      <div *ngIf="!inputValid" style="width: 100%; text-align: center; color: red;font-size: small">All responses should
+        be unique; at least 2 responses must be within one question
+      </div>
+      <button mat-button style="margin: auto" (click)="addResponse()">
+        <hr>
+        <mat-icon>add_circle_outline</mat-icon>
+      </button>
+    </div>
+
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button (click)="onNoClick()">Close</button>
+  <button mat-raised-button (click)="submit()" style="background: lightgreen">Submit</button>
+</div>
